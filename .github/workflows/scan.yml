@@ -7,7 +7,8 @@ on:
 jobs:
   code_checkout:
     name: stage1
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
