@@ -3,7 +3,10 @@ description:  automate legal scan
 
 on:
   repository_dispatch:
-
+runs:
+  using: 'python'
+  main: './main.py'  # Path to the Python script
+  
 jobs:
   code_checkout:
     name: stage1
