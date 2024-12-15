@@ -1,0 +1,13 @@
+# .github/workflows/trigger-workflow.yml in clientRepo
+name: Trigger LibraryRepo Workflow
+on:
+  push:
+
+jobs:
+  call-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call reusable workflow in libraryRepo
+        uses: OSrivalli/titus_multiplex/.github/workflows/a.yml@main
+        with:
+          message: “Triggered from clientRepo”
