@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Call reusable workflow in libraryRepo
-        uses: actions/checkout@v2
+        run: |
+          echo "hello"
         
         
