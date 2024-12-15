@@ -1,0 +1,28 @@
+name: Workflow 3 - Process PR Details
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_title:
+        description: 'PR Title'
+        required: true
+      pr_url:
+        description: 'PR URL'
+        required: true
+      pr_author:
+        description: 'PR Author'
+        required: true
+
+jobs:
+  job3:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Display PR Details
+        run: |
+          echo "PR Title: ${{ github.event.inputs.pr_title }}"
+          echo "PR URL: ${{ github.event.inputs.pr_url }}"
+          echo "PR Author: ${{ github.event.inputs.pr_author }}"
