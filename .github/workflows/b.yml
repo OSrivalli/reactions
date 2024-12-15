@@ -1,13 +1,52 @@
-# .github/workflows/trigger-workflow.yml in clientRepo
-name: Trigger LibraryRepo Workflow
+name: Check Prohibited Words in PR
+
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
-  call-workflow:
+  check-prohibited-words:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Call reusable workflow in libraryRepo
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Run prohibited words check
+        id: check_words
+        run: |
+          # Define prohibited words
+          prohibited_words=("foo" "bar" "baz")
+
+          # Get the list of changed files in the PR
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+
+          # Flag to check if prohibited words are found
+          prohibited_word_found=false
+
+          # Loop over each changed file and check for prohibited words
+          for file in $changed_files; do
+            if [[ ! -f "$file" ]] || [[ "$file" == *".png" || "$file" == *".jpg" ]]; then
+              continue
+            fi
+
+            while IFS= read -r line; do
+              for word in "${prohibited_words[@]}"; do
+                if [[ "$line" == *"$word"* ]]; then
+                  echo "::error file=$file::Prohibited word '$word' found in file."
+                  prohibited_word_found=true
+                fi
+              done
+            done < "$file"
+          done
+
+          # Set the environment variable to indicate if prohibited words were found
+          echo "prohibited_word_found=$prohibited_word_found" >> $GITHUB_ENV
+
+      - name: Trigger Repo B workflow if prohibited words found
+        if: env.prohibited_word_found == 'true'
         uses: OSrivalli/titus_multiplex/.github/workflows/a.yml@main
         with:
-          message: “Triggered from clientRepo”
+          ref: main
+          event_type: "prohibited-word-found"
+          client_payload: '{"pr_url": "${{ github.event.pull_request.html_url }}"}'
