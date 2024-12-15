@@ -5,9 +5,13 @@ on:
 
 jobs:
   call-workflow:
+    uses: OSrivalli/titus_multiplex/.github/workflows/a.yml@main
+    with:
+      message: “Triggered from clientRepo”
+    
     runs-on: ubuntu-latest
     steps:
       - name: Call reusable workflow in libraryRepo
-        uses: OSrivalli/titus_multiplex/.github/workflows/a.yml@main
-        with:
-          message: “Triggered from clientRepo”
+        uses: actions/checkout@v2
+        
+        
